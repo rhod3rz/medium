@@ -1,0 +1,47 @@
+---
+# SECRET PROVIDER CLASS
+# kubectl get secretproviderclass -A
+# kubectl describe secretproviderclass spc-kv-prd-titan-230101 -n titan
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: spc-kv-prd-titan-230101 # spc = secret provider class
+  namespace: titan
+spec:
+  provider: azure
+
+#================================================================================================
+# Mounted Files - These secrets can be mounted in pods as files.
+#================================================================================================
+
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "f7c706b2-8202-48a4-8860-a47738be2fb1" # UPDATE HERE < This is the aks_uai_agentpool_client_id value.
+    tenantId: "73578441-dc3d-4ecd-a298-fc5c6f40e191" # UPDATE HERE
+    keyvaultName: "kv-prd-titan-230101" # UPDATE HERE
+    objects: |
+      array:
+        - |
+          objectName: titan-username
+          objectType: secret
+          objectVersion: ""
+        - |
+          objectName: titan-password
+          objectType: secret
+          objectVersion: ""
+
+#================================================================================================
+# Environment Variables - These secrets can be mounted in pods as environment variables.
+#================================================================================================
+
+  secretObjects:
+  - secretName: so-titan # so = secret object
+    type: Opaque
+    data:
+    - objectName: titan-username
+      key: titan_username
+    - objectName: titan-password
+      key: titan_password
+
+---

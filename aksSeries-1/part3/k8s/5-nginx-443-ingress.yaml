@@ -1,0 +1,28 @@
+---
+# INGRESS
+# Browse to https://prd.rhod3rz.com; you will need to update DNS or fudge your hosts file first!
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  namespace: titan
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+      - "prd.rhod3rz.com"            # UPDATE HERE.
+    - secretName: titan-certificate
+  rules:
+  - host: "prd.rhod3rz.com"          # UPDATE HERE.
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+---

@@ -1,0 +1,24 @@
+---
+# AZURE KEY VAULT SECRET
+# kubectl get AzureKeyVaultSecret -n titan
+# kubectl describe AzureKeyVaultSecret akvs-certificate-sync -n titan
+# kubectl get secret -n titan
+# kubectl describe secret titan-certificate -n titan
+# kubectl get secret titan-certificate -o yaml -n titan
+# kubectl logs deployment/akv2k8s-controller -n akv2k8s
+apiVersion: spv.no/v2beta1
+kind: AzureKeyVaultSecret
+metadata:
+  name: akvs-certificate-sync
+  namespace: titan             # The namespace to create the secret in. Secrets must be in the same namespace as the resource!
+spec:
+  vault:
+    name: kv-prd-titan-230101  # Name of key vault.
+    object:
+      name: titan-certificate  # Name of the certificate.
+      type: certificate
+  output:
+    secret:
+      name: titan-certificate  # Kubernetes secret name.
+      type: kubernetes.io/tls  # Kubernetes secret type.
+---
